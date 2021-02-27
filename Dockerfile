@@ -18,7 +18,7 @@ ENV DEV="make gcc git g++ automake curl wget autoconf build-essential libass-dev
 
 ARG NASM_VER="2.14.02"
 ARG LAME_VER="3.100"
-ARG FFMPEG_VER="4.3.1"
+ARG FFMPEG_VER="4.3.2"
 
 ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:$LD_LIBRARY_PATH
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -172,7 +172,7 @@ RUN cd /tmp/ffmpeg_sources && \
     PATH="/tmp/bin:/usr/local/cuda/bin:$PATH" make -j$(nproc) && \
     make install
 
-# 不要なパッケージを削除
+# remove unnecessary packages
 RUN apt-get -y remove $DEV && \
     apt-get autoremove -y && \
     apt-get clean && \
