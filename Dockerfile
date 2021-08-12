@@ -1,14 +1,15 @@
 # nvidia environment
-FROM nvidia/cuda:11.2.1-devel-ubuntu18.04 as nvidia_environment
+FROM nvidia/cuda:11.4.1-devel-ubuntu18.04 as nvidia_environment
 
 RUN cd / && \
     tar czf nvidia.tar.gz \
+      /etc/alternatives/cuda* \
       /usr/local/cuda* \
       /usr/lib/x86_64-linux-gnu/libcuda* \
       /usr/lib/x86_64-linux-gnu/libnv*
 
 # epgstation
-FROM l3tnun/epgstation:master-debian
+FROM l3tnun/epgstation:v2.6.7-debian
 
 # nvidia environment copy
 COPY --from=nvidia_environment /nvidia.tar.gz /nvidia.tar.gz
@@ -18,7 +19,7 @@ ENV DEV="make gcc git g++ automake curl wget autoconf build-essential libass-dev
 
 ARG NASM_VER="2.14.02"
 ARG LAME_VER="3.100"
-ARG FFMPEG_VER="4.3.2"
+ARG FFMPEG_VER="4.4"
 
 ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:$LD_LIBRARY_PATH
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -103,14 +104,13 @@ RUN cd /tmp/ffmpeg_sources && \
     make install
 
 #libsvtav1
-# (Not yet supported in the release version. Can be specified using snapshot.)
-# RUN cd /tmp/ffmpeg_sources && \
-#     git -C SVT-AV1 pull 2> /dev/null || git clone https://github.com/AOMediaCodec/SVT-AV1.git && \
-#     mkdir -p SVT-AV1/build && \
-#     cd SVT-AV1/build && \
-#     PATH="/tmp/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/tmp/ffmpeg_build" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF .. && \
-#     PATH="/tmp/bin:$PATH" make -j$(nproc) && \
-#     make install
+RUN cd /tmp/ffmpeg_sources && \
+    git -C SVT-AV1 pull 2> /dev/null || git clone https://github.com/AOMediaCodec/SVT-AV1.git && \
+    mkdir -p SVT-AV1/build && \
+    cd SVT-AV1/build && \
+    PATH="/tmp/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/tmp/ffmpeg_build" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF .. && \
+    PATH="/tmp/bin:$PATH" make -j$(nproc) && \
+    make install
 
 #NVIDIA codec API
 RUN cd /tmp/ffmpeg_sources && \
@@ -154,7 +154,7 @@ RUN cd /tmp/ffmpeg_sources && \
       --enable-libmp3lame \
       --enable-libopus \
       --enable-libtheora \
-    #   --enable-libsvtav1 \
+      --enable-libsvtav1 \
       --enable-libvorbis \
       --enable-libvpx \
       --enable-libx264 \
