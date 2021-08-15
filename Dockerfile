@@ -9,7 +9,7 @@ RUN cd / && \
       /usr/lib/x86_64-linux-gnu/libnv*
 
 # epgstation
-FROM l3tnun/epgstation:v2.6.7-debian
+FROM l3tnun/epgstation:v2.6.9-debian
 
 # nvidia environment copy
 COPY --from=nvidia_environment /nvidia.tar.gz /nvidia.tar.gz
@@ -20,6 +20,8 @@ ENV DEV="make gcc git g++ automake curl wget autoconf build-essential libass-dev
 ARG NASM_VER="2.14.02"
 ARG LAME_VER="3.100"
 ARG FFMPEG_VER="4.4"
+# ARG NV_CODEC_HEADERS_VER="n11.0.10.1"
+ARG NV_CODEC_HEADERS_VER="n11.1.5.0"
 
 ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:$LD_LIBRARY_PATH
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -114,7 +116,7 @@ RUN cd /tmp/ffmpeg_sources && \
 
 #NVIDIA codec API
 RUN cd /tmp/ffmpeg_sources && \
-    git -C nv-codec-headers pull 2> /dev/null || git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers && \
+    git -C nv-codec-headers pull 2> /dev/null || git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers -b ${NV_CODEC_HEADERS_VER} && \
     cd nv-codec-headers && \
     make -j$(nproc) && \
     make install PREFIX="/tmp/ffmpeg_build"
