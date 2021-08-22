@@ -9,7 +9,7 @@ RUN cd / && \
       /usr/lib/x86_64-linux-gnu/libnv*
 
 # epgstation
-FROM l3tnun/epgstation:v2.6.9-debian
+FROM l3tnun/epgstation:v2.6.11-debian
 
 # nvidia environment copy
 COPY --from=nvidia_environment /nvidia.tar.gz /nvidia.tar.gz
