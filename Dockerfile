@@ -1,5 +1,5 @@
 # nvidia environment
-FROM nvidia/cuda:11.4.1-devel-ubuntu18.04 as nvidia_environment
+FROM nvidia/cuda:11.4.3-devel-ubuntu18.04 as nvidia_environment
 
 RUN cd / && \
     tar czf nvidia.tar.gz \
@@ -9,7 +9,7 @@ RUN cd / && \
       /usr/lib/x86_64-linux-gnu/libnv*
 
 # epgstation
-FROM l3tnun/epgstation:v2.6.11-debian
+FROM l3tnun/epgstation:v2.6.20-debian
 
 # nvidia environment copy
 COPY --from=nvidia_environment /nvidia.tar.gz /nvidia.tar.gz
@@ -19,7 +19,7 @@ ENV DEV="make gcc git g++ automake curl wget autoconf build-essential libass-dev
 
 ARG NASM_VER="2.14.02"
 ARG LAME_VER="3.100"
-ARG FFMPEG_VER="4.4"
+ARG FFMPEG_VER="4.4.1"
 # ARG NV_CODEC_HEADERS_VER="n11.0.10.1"
 ARG NV_CODEC_HEADERS_VER="n11.1.5.0"
 
