@@ -2,7 +2,7 @@
 FROM nvidia/cuda:12.2.2-devel-ubuntu20.04 as nvidia_environment
 
 # epgstation
-FROM l3tnun/epgstation:v2.7.3-debian
+FROM l3tnun/epgstation:v2.9.0-debian
 
 # nvidia environment copy
 COPY --from=nvidia_environment /usr/local/cuda-12.2 /usr/local/cuda-12.2
@@ -123,7 +123,7 @@ RUN cd /tmp/ffmpeg_sources && \
 
 #libaribb24
 RUN cd /tmp/ffmpeg_sources && \
-    git clone https://github.com/nkoriyama/aribb24 && \
+    git -C aribb24 pull 2> /dev/null || git clone https://github.com/nkoriyama/aribb24 && \
     cd aribb24 && \
     autoreconf -fiv && \
     ./configure --prefix="/tmp/ffmpeg_build" --enable-static --disable-shared && \
@@ -132,7 +132,7 @@ RUN cd /tmp/ffmpeg_sources && \
 
 #ffmpeg
 RUN cd /tmp/ffmpeg_sources && \
-    git clone --branch n${FFMPEG_VER} https://github.com/FFmpeg/FFmpeg.git ffmpeg-${FFMPEG_VER} && \
+    git -C ffmpeg-${FFMPEG_VER} pull 2> /dev/null || git clone --branch n${FFMPEG_VER} https://github.com/FFmpeg/FFmpeg.git ffmpeg-${FFMPEG_VER} && \
     cd ffmpeg-${FFMPEG_VER} && \
     git config user.email "you@example.com" && \
     git config user.name "Your Name" && \
