@@ -2,7 +2,7 @@
 FROM nvidia/cuda:12.2.2-devel-ubuntu20.04 as nvidia_environment
 
 # epgstation
-FROM l3tnun/epgstation:v2.9.0-debian
+FROM l3tnun/epgstation:v2.10.0-debian
 
 # nvidia environment copy
 COPY --from=nvidia_environment /usr/local/cuda-12.2 /usr/local/cuda-12.2
@@ -108,7 +108,7 @@ RUN cd /tmp/ffmpeg_sources && \
 
 #libsvtav1
 RUN cd /tmp/ffmpeg_sources && \
-    git -C SVT-AV1 pull 2> /dev/null || git clone --depth=1 https://gitlab.com/AOMediaCodec/SVT-AV1.git && \
+    git -C SVT-AV1 pull 2> /dev/null || git clone --depth=1 https://gitlab.com/AOMediaCodec/SVT-AV1.git -b v2.3.0 && \
     cd SVT-AV1/Build && \
     PATH="/tmp/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/tmp/ffmpeg_build" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF .. && \
     PATH="/tmp/bin:$PATH" make -j$(nproc) && \
